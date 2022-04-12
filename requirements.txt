@@ -1,4 +1,4 @@
-psycopg3
+psycopg2
 sentence_transformers
 scipy
 click==8
