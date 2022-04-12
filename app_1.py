@@ -154,7 +154,7 @@ for x in Goals:
      df['matching score'] = df[col_list].sum(axis = 1)
      
      
-df = df.groupby('id', as_index=False).first()
+     df = df.groupby('id', as_index=False).first()
 
 
      
@@ -235,7 +235,7 @@ df = df.groupby('id', as_index=False).first()
 
 
 
-st.write(df)
+     st.write(df)
 
      
      
