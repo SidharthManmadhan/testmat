@@ -2,7 +2,7 @@ streamlit
 ez_setup
 setuptools
 config
-psycopg-binary
+psycopg2-binary
 sentence_transformers
 scipy
 click==8
