@@ -1,7 +1,7 @@
 ez_setup
 setuptools
 config
-libpq
+
 psycopg2-binary
 sentence_transformers
 scipy
