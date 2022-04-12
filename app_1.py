@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import psycopg2 as pg
+import psycopg2-binary as pg
 import collections, functools, operator
 from sentence_transformers import SentenceTransformer
 import numpy as np
