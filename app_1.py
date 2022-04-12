@@ -145,11 +145,7 @@ for x in Goals:
      df_degrees = df_degrees.loc[df_degrees['name'] == Degree]
      degree = df_degrees.iloc[0]['name']
      df['degree score'] = np.where(df['name'] == degree ,1,0)
-     df['subject score'] = np.nan
-     df_subjects =  df_subjects.loc[df_subjects['subject_name'] == Subject]
-     subject_name = df_subjects.iloc[0]['subject_name']
-     df['subject score'] = np.where(df['name'] == subject_name ,1,0)
-     col_list = ['Weight','description_score','city score','degree score','subject score']
+     col_list = ['Weight','description_score','city score','degree score']
      df['matching score'] = df[col_list].sum(axis = 1)
      
      
