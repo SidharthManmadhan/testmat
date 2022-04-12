@@ -1,5 +1,5 @@
 setuptools
-py_config
+py-config
 psycopg2
 sentence_transformers
 scipy
