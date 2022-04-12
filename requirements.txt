@@ -1,3 +1,4 @@
+py_config
 psycopg2
 sentence_transformers
 scipy
