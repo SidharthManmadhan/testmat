@@ -1,8 +1,8 @@
 ez_setup
 setuptools
 config
-
-psycopg2-binary
+libpq-dev
+psycopg2
 sentence_transformers
 scipy
 click==8
