@@ -1,3 +1,4 @@
+streamlit
 ez_setup
 setuptools
 config
