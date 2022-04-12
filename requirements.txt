@@ -1,7 +1,7 @@
 ez_setup
 setuptools
 py-config
-psycopg2
+psycopg
 sentence_transformers
 scipy
 click==8
