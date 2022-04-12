@@ -1,3 +1,4 @@
+ez_setup
 setuptools
 py-config
 psycopg2
