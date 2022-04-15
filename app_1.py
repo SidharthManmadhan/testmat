@@ -5,7 +5,8 @@ import collections, functools, operator
 from sentence_transformers import SentenceTransformer
 import numpy as np
 from scipy.spatial import distance
-
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 engine = pg.connect("dbname='huzzle_staging' user='postgres' host='huzzle-staging.ct4mk1ahmp9p.eu-central-1.rds.amazonaws.com' port='5432' password='2Yw*PG9x-FcWvc7R'")
 df_tags = pd.read_sql('select * from tags', con=engine)
 df_degrees = pd.read_sql('select * from degrees', con=engine)
@@ -41,7 +42,7 @@ goals = ['Start my Career with a Spring Week','Get a Summer Internship','Get an 
 
 Goals =  st.multiselect('Enter the goals',goals,key = "one")
 interest = st.multiselect('Enter the interest',df_tags['name'].unique(),key = "two")
-weight = [1,2,3,3,2,1]
+weight = [1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1]
 Weight = st.multiselect('Enter the weight',weight,key = "three")
 Interest = pd.DataFrame(interest,columns = ['Interest'])
 Weight = pd.DataFrame(Weight,columns = ['Weight'])
@@ -49,8 +50,12 @@ df_interest = pd.concat([Interest,Weight],axis = 1)
 University = st.selectbox('Enter the university',df_universities['name'].unique(),key = 'four')
 Degree =  st.selectbox('Enter the degree',df_degrees['name'].unique(),key = 'five')
 Subject = st.selectbox('Enter the subject',df_subjects['subject_name'].unique(),key = 'six')
-year = [1,2,3,4]
-Year = st.selectbox('Enter the year',year,key = 'seven')
+#Subject = pd.DataFrame(Subject,columns = ['Subject'])
+#Score = [1]
+#subjectscore = pd.DataFrame(Score,columns = ['subject score'])
+#df_subject = pd.concat([Subject,subjectscore],axis = 1)
+#year = [1,2,3,4]
+#Year = st.selectbox('Enter the year',year,key = 'seven')
 for x in Goals:
      data.append(pd.DataFrame(goal_dataframe_mapping[x])) #based on the goals selected corresponding dataframes are printed
      result = dict(functools.reduce(operator.add,map(collections.Counter, data)))   #if same touchpoints are available on goals selected, the values of the touchpoints are added to each other and list will be formed 
@@ -115,38 +120,137 @@ for x in Goals:
      df = df.loc[:,~df.columns.duplicated()]
      df =  pd.merge(df, df_goals, left_on='kind',right_on='kind_1',suffixes=('', '_x'),how = 'inner')
      df = df.loc[:,~df.columns.duplicated()]
+     
      #grouped_5 = df.groupby(df.type)
      #df_T = grouped_5.get_group("Topic")
-     df =  pd.merge(df, df_interest, left_on='name',right_on='Interest',suffixes=('', '_x'),how = 'left')
-     df_T = df.loc[:,~df.columns.duplicated()]
-     df['description'] = df['description'].str.replace(r'<[^<>]*>', '', regex=True)
-     df['description'] = df['description'].str.replace(r'[^\w\s]+', '', regex=True)
-     df['description'] = df['description'].str.lower()
-     df['name'] = df['name'].str.lower()
+     df_T =  pd.merge(df, df_interest, left_on='name',right_on='Interest',suffixes=('', '_x'),how = 'inner')
+     df_T = df_T.loc[:,~df_T.columns.duplicated()]
+     df_T['description'] = df_T['description'].str.replace(r'<[^<>]*>', '', regex=True)
+     df_T['description'] = df_T['description'].str.replace(r'[^\w\s]+', '', regex=True)
+     df_T['description'] = df_T['description'].str.lower()
+     df_T['Interest'] = df_T['Interest'].str.lower()
      model = SentenceTransformer('bert-base-nli-mean-tokens')
-     sentence_embeddings = model.encode(df['description'])
-     word_embeddings = model.encode(df['name'])
-     A = np.arange(len(df['description']))
+     sentence_embeddings = model.encode(df_T['description'])
+     word_embeddings = model.encode(df_T['Interest'])
+     A = np.arange(len(df_T['description']))
      for a in A:
           description_score  =  distance.cdist([sentence_embeddings[a]],word_embeddings[0:])
           a += 1
           for x in description_score:
-               df['description_score']=pd.Series(x)
+               df_T['description_score']=pd.Series(x)
      
-     df['city score'] = np.nan
+     df_T['city score'] = np.nan
      df_universities = pd.merge(df_universities, df_cities, left_on='city_id',right_on='id',suffixes=('', '_x'),how = 'inner')
      df_universities = df_universities.loc[:,~df_universities.columns.duplicated()]
      df_universities = df_universities.loc[df_universities['name'] == University]
      city_name = df_universities.iloc[0]['city_name']
-     df['city score'] = np.where(df['city_name'] == city_name, 1,0)
-     #grouped_7 = df.groupby(df.type)
-     #df_E = grouped_7.get_group("EducationRequirement")
-     df['degree score'] = np.nan
+     df_T['city score'] = np.where(df_T['city_name'] == city_name, 1,0)
+     grouped_7 = df.groupby(df.type)
+     df_E = grouped_7.get_group("EducationRequirement")
+     print(df_E['name'].unique())
+     df_E['degree score'] = np.nan
      df_degrees = df_degrees.loc[df_degrees['name'] == Degree]
      degree = df_degrees.iloc[0]['name']
-     df['degree score'] = np.where(df['name'] == degree ,1,0)
-     col_list = ['Weight','description_score','city score','degree score']
-     df['matching score'] = df[col_list].sum(axis = 1)
+     df_E['degree score'] = np.where(df_E['name'] == degree ,1,0)
+     df_E = df_E.loc[df_E["degree score"] == 1]
+     df_TE =  pd.merge(df, df_E, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
+     df_TE = df_TE.loc[:,~df_TE.columns.duplicated()]
+     grouped_8 = df.groupby(df.name)
+     df_O = grouped_8.get_group("Open to All Students")
+     df_TO =  pd.merge(df, df_O, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
+     df_TO = df_TE.loc[:,~df_TE.columns.duplicated()]
+     df_TE = pd.concat([df_TE,df_TO])
+     grouped_10 = df.groupby(df.name)
+     df_US = grouped_10.get_group("University Students Only")
+     df_US =  pd.merge(df, df_US, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
+     df_US = df_US.loc[:,~df_US.columns.duplicated()]
+     df_TE = pd.concat([df_TE,df_US])
+     
+     #df['subject score'] = np.nan
+     df_subjects =  df_subjects.loc[df_subjects['subject_name'] == Subject]
+     subject_name = df_subjects.iloc[0]['subject_name']
+     S = []
+     
+     if ',' in subject_name:
+        subject_0 = subject_name.split(', ')
+        subject_0 = subject_0[0]
+        S.append(subject_0)
+  #subject_2 = subject_0[1].split('&')[0]
+  #subject_3 = subject_0[1].split('&')[1]
+  #subject_3 = subject_name.split('&')[1]
+  #subject_2 = subject_1.split(', ')[1]
+  #subject_3 = subject_name.split(',')[1]
+  #subject_3 = subject_3.split('&')[1]
+  
+     if '&' in subject_name:
+        subject = subject_name.split('&')
+
+
+        subject = subject[0]
+        subject_1 = subject_name.split('&')[1]
+        S.append(subject_1)
+  
+  
+
+        if ',' in subject:
+             subject_3 = subject.split(', ')[1]
+             S.append(subject_3)
+
+    
+        else:
+            subject_3 = subject
+
+            S.append(subject_3)
+
+
+     else:
+          S.append(subject_name)
+
+
+ 
+   
+  #subject_4 = subject_name.split('&')[0]
+#ubject_5 = subject_4[1]
+  #print(subject_4)
+  
+   
+
+     df_subject = pd.DataFrame(S, columns =['subject'])
+     df_subject['subject_score'] = pd.Series([1 for x in range(len(df_subject.index))])
+
+     
+
+     df_S =  pd.merge(df, df_subject, left_on='name',right_on='subject',suffixes=('', '_x'),how = 'inner')
+     df_S = df_S.loc[:,~df_S.columns.duplicated()]
+
+     df_S = pd.concat([df_TE,df_S])
+
+
+     df_companies = pd.read_sql('select * from companies', con=engine)
+     df_tagging = pd.read_sql('select * from taggings', con=engine)
+     df_companies =  pd.merge(df_companies, df_tagging, left_on='id',right_on='taggable_id',suffixes=('', '_x'))
+     df_tags = pd.read_sql('select * from tags', con=engine)
+     df_companies = pd.merge(df_companies,df_tags,left_on='tag_id',right_on='id',suffixes=('', '_x'))
+     df_companies = df_companies.loc[:,~df_companies.columns.duplicated()]
+
+     df = pd.merge(df,df_companies,left_on='name',right_on='name',suffixes=('', '_x'))
+     df = df.loc[:,~df.columns.duplicated()]
+
+     df = pd.concat([df_S,df])
+    
+
+
+
+        
+
+
+
+
+
+
+     #df['subject score'] = np.where(df['name'] == subject_name ,1,0)
+     #col_list = ['Weight','description_score','city score','degree score','subject score']
+     #df['matching score'] = df[col_list].sum(axis = 1)
      
      
      df = df.groupby('id', as_index=False).first()
@@ -231,7 +335,6 @@ for x in Goals:
 
 
      st.write(df)
-
      
      
 
