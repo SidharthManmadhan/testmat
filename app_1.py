@@ -5,8 +5,7 @@ import collections, functools, operator
 from sentence_transformers import SentenceTransformer
 import numpy as np
 from scipy.spatial import distance
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
+
 engine = pg.connect("dbname='huzzle_staging' user='postgres' host='huzzle-staging.ct4mk1ahmp9p.eu-central-1.rds.amazonaws.com' port='5432' password='2Yw*PG9x-FcWvc7R'")
 df_tags = pd.read_sql('select * from tags', con=engine)
 df_degrees = pd.read_sql('select * from degrees', con=engine)
