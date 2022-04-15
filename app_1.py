@@ -1,11 +1,12 @@
-import streamlit as st
+mport streamlit as st
 import pandas as pd
 import psycopg2 as pg
 import collections, functools, operator
 from sentence_transformers import SentenceTransformer
 import numpy as np
 from scipy.spatial import distance
-
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 engine = pg.connect("dbname='huzzle_staging' user='postgres' host='huzzle-staging.ct4mk1ahmp9p.eu-central-1.rds.amazonaws.com' port='5432' password='2Yw*PG9x-FcWvc7R'")
 df_tags = pd.read_sql('select * from tags', con=engine)
 df_degrees = pd.read_sql('select * from degrees', con=engine)
@@ -146,22 +147,21 @@ for x in Goals:
      df_T['city score'] = np.where(df_T['city_name'] == city_name, 1,0)
      grouped_7 = df.groupby(df.type)
      df_E = grouped_7.get_group("EducationRequirement")
-     print(df_E['name'].unique())
      df_E['degree score'] = np.nan
      df_degrees = df_degrees.loc[df_degrees['name'] == Degree]
      degree = df_degrees.iloc[0]['name']
      df_E['degree score'] = np.where(df_E['name'] == degree ,1,0)
      df_E = df_E.loc[df_E["degree score"] == 1]
-     df_TE =  pd.merge(df_T, df_E, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
+     df_TE =  pd.merge(df_T, df_E, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'left')
      df_TE = df_TE.loc[:,~df_TE.columns.duplicated()]
      grouped_8 = df.groupby(df.name)
      df_O = grouped_8.get_group("Open to All Students")
-     df_TO =  pd.merge(df_T, df_O, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
+     df_TO =  pd.merge(df_T, df_O, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'left')
      df_TO = df_TE.loc[:,~df_TE.columns.duplicated()]
      df_TE = pd.concat([df_TE,df_TO])
      grouped_10 = df.groupby(df.name)
      df_US = grouped_10.get_group("University Students Only")
-     df_US =  pd.merge(df_T, df_US, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
+     df_US =  pd.merge(df_T, df_US, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'left')
      df_US = df_US.loc[:,~df_US.columns.duplicated()]
      df_TE = pd.concat([df_TE,df_US])
      
@@ -232,27 +232,17 @@ for x in Goals:
      df_companies = pd.merge(df_companies,df_tags,left_on='tag_id',right_on='id',suffixes=('', '_x'))
      df_companies = df_companies.loc[:,~df_companies.columns.duplicated()]
      df_companies['company score'] = pd.Series([1 for x in range(len(df_companies.index))])
+
      df = pd.merge(df,df_companies,left_on='name',right_on='name',suffixes=('', '_x'))
      df = df.loc[:,~df.columns.duplicated()]
 
      df = pd.concat([df_S,df])
-    
-
-
-
-        
-
-
-
-
-
-
-     #df['subject score'] = np.where(df['name'] == subject_name ,1,0)
-     #col_list = ['Weight','description_score','city score','degree score','subject score']
-     #df['matching score'] = df[col_list].sum(axis = 1)
-     
-     
      df = df.groupby('id', as_index=False).first()
+     col_list = ['Weight','description_score','city score','degree score','subject_score','company score']
+     df['matching score'] = df[col_list].sum(axis=1)
+     
+     
+     #df = df.groupby('id', as_index=False).first()
 
 
      
@@ -278,9 +268,9 @@ for x in Goals:
      #subject_name = df_subjects.iloc[0]['subject_name']
     
      
-     columns_list = ['Weight','matching score','degree score','city score','subject_score']
+     #columns_list = ['Weight','matching score', 'degree score','subject_score_0','subject_score_1']
 
-     df['matching score'] = df[columns_list].sum(axis = 1)
+     #df['matching score'] = df[columns_list].sum(axis = 1)
      #df['description'] = df['description'].str.replace(r'<[^<>]*>', '', regex=True)
      #df['description'] = df['description'].str.replace(r'[^\w\s]+', '', regex=True)
      #df['description'] = df['description'].str.lower()
@@ -294,7 +284,7 @@ for x in Goals:
           #a += 1
           #for x in description_score:
                #df['description_score']=pd.Series(x)
-     
+
 
 
 
@@ -334,9 +324,7 @@ for x in Goals:
 
 
      st.write(df)
+
      
      
 
-
-
-     
