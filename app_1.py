@@ -231,7 +231,7 @@ for x in Goals:
      df_tags = pd.read_sql('select * from tags', con=engine)
      df_companies = pd.merge(df_companies,df_tags,left_on='tag_id',right_on='id',suffixes=('', '_x'))
      df_companies = df_companies.loc[:,~df_companies.columns.duplicated()]
-
+     df_companies['company score'] = pd.Series([1 for x in range(len(df_companies.index))])
      df = pd.merge(df,df_companies,left_on='name',right_on='name',suffixes=('', '_x'))
      df = df.loc[:,~df.columns.duplicated()]
 
@@ -294,7 +294,7 @@ for x in Goals:
           #a += 1
           #for x in description_score:
                #df['description_score']=pd.Series(x)
-     df = df.groupby('id', as_index=False).first()
+     
 
 
 
