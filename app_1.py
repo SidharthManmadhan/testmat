@@ -278,9 +278,9 @@ for x in Goals:
      #subject_name = df_subjects.iloc[0]['subject_name']
     
      
-     #columns_list = ['Weight','matching score', 'degree score','subject_score_0','subject_score_1']
+     columns_list = ['Weight','matching score','degree score','city score','subject_score']
 
-     #df['matching score'] = df[columns_list].sum(axis = 1)
+     df['matching score'] = df[columns_list].sum(axis = 1)
      #df['description'] = df['description'].str.replace(r'<[^<>]*>', '', regex=True)
      #df['description'] = df['description'].str.replace(r'[^\w\s]+', '', regex=True)
      #df['description'] = df['description'].str.lower()
