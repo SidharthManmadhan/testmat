@@ -152,16 +152,16 @@ for x in Goals:
      degree = df_degrees.iloc[0]['name']
      df_E['degree score'] = np.where(df_E['name'] == degree ,1,0)
      df_E = df_E.loc[df_E["degree score"] == 1]
-     df_TE =  pd.merge(df, df_E, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
+     df_TE =  pd.merge(df_T, df_E, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
      df_TE = df_TE.loc[:,~df_TE.columns.duplicated()]
      grouped_8 = df.groupby(df.name)
      df_O = grouped_8.get_group("Open to All Students")
-     df_TO =  pd.merge(df, df_O, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
+     df_TO =  pd.merge(df_T, df_O, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
      df_TO = df_TE.loc[:,~df_TE.columns.duplicated()]
      df_TE = pd.concat([df_TE,df_TO])
      grouped_10 = df.groupby(df.name)
      df_US = grouped_10.get_group("University Students Only")
-     df_US =  pd.merge(df, df_US, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
+     df_US =  pd.merge(df_T, df_US, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
      df_US = df_US.loc[:,~df_US.columns.duplicated()]
      df_TE = pd.concat([df_TE,df_US])
      
@@ -294,7 +294,7 @@ for x in Goals:
           #a += 1
           #for x in description_score:
                #df['description_score']=pd.Series(x)
-
+     df = df.groupby('id', as_index=False).first()
 
 
 
