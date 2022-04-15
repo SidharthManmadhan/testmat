@@ -54,8 +54,8 @@ Subject = st.selectbox('Enter the subject',df_subjects['subject_name'].unique(),
 #Score = [1]
 #subjectscore = pd.DataFrame(Score,columns = ['subject score'])
 #df_subject = pd.concat([Subject,subjectscore],axis = 1)
-#year = [1,2,3,4]
-#Year = st.selectbox('Enter the year',year,key = 'seven')
+year = [1,2,3,4]
+Year = st.selectbox('Enter the year',year,key = 'seven')
 for x in Goals:
      data.append(pd.DataFrame(goal_dataframe_mapping[x])) #based on the goals selected corresponding dataframes are printed
      result = dict(functools.reduce(operator.add,map(collections.Counter, data)))   #if same touchpoints are available on goals selected, the values of the touchpoints are added to each other and list will be formed 
