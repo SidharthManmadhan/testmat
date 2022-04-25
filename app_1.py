@@ -211,7 +211,6 @@ for x in Goals:
    df_degree_2 = df_degree_2.loc[:,~df_degree_2.columns.duplicated()]
    df_D = pd.concat([df_degree,df_degree_1])
    df_D = pd.concat([df_D,df_degree_2])
-   df_D = df_D[['degree','degree_score','Year','year_score']].copy()
    df_SD = pd.merge(df_S, df_D, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
    df_SD = df_SD.loc[:,~df_SD.columns.duplicated()]
    df_companies = pd.read_sql('select * from companies', con=engine)
