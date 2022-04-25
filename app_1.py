@@ -192,6 +192,7 @@ for x in Goals:
    df_S = df_S.loc[:,~df_S.columns.duplicated()]
    df_degrees = df_degrees.loc[df_degrees['name'] == Degree]
    degree = df_degrees.iloc[0]['name']
+   degree = [degree]
    df_degree = pd.DataFrame(degree, columns =['degree'])
    df_degree['degree_score'] = pd.Series([1 for x in range(len(df_subject.index))])
    df_degree =  pd.merge(df, df_degree, left_on='name',right_on='degree',suffixes=('', '_x'),how = 'inner')
@@ -203,6 +204,7 @@ for x in Goals:
    df_degree_1 = df_degree_1.loc[:,~df_degree_1.columns.duplicated()]
    df_D = pd.concat([df_degree,df_degree_1])
    df['name'] = df['name'].replace(['First Year ','Second Year','Third Year','Final Year'],[1,2,3,4])
+   Year = [Year]
    df_degree_2 = pd.DataFrame(Year, columns =['Year'])
    df_degree_2['year_score'] = pd.Series([1 for x in range(len(df_subject.index))])
    df_degree_2 =  pd.merge(df, df_degree_2, left_on='name',right_on='Year',suffixes=('', '_x'),how = 'inner')
