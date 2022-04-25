@@ -36,12 +36,12 @@ goal_dataframe_mapping = {
     'Meet Like-minded Students & join Societies':goal_7,
     'Expand my Network & Connect with Industry Leaders':goal_8,
     'No goals selected' : goal_9} 
-data = []
+
 goals = ['Start my Career with a Spring Week','Get a Summer Internship','Get an Internship alongside my Studies', 'Land a Placement Year','Win Awards & Competitions','Secure a Graduate Job','Find a Co-founder & Start a Business', 'Meet like-minded students','Expand my Network & Meet Industry Leader']
 
 Goals =  st.multiselect('Enter the goals',goals,key = "one")
 interest = st.multiselect('Enter the interest',df_tags['name'].unique(),key = "two")
-weight = [1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1]
+weight = [1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,,3,3,2,1,1,2,3,3,2]
 Weight = st.multiselect('Enter the weight',weight,key = "three")
 Interest = pd.DataFrame(interest,columns = ['Interest'])
 Weight = pd.DataFrame(Weight,columns = ['Weight'])
@@ -55,6 +55,7 @@ Subject = st.selectbox('Enter the subject',df_subjects['subject_name'].unique(),
 #df_subject = pd.concat([Subject,subjectscore],axis = 1)
 year = [1,2,3,4]
 Year = st.selectbox('Enter the year',year,key = 'seven')
+data = []
 for x in Goals:
      data.append(pd.DataFrame(goal_dataframe_mapping[x])) #based on the goals selected corresponding dataframes are printed
      result = dict(functools.reduce(operator.add,map(collections.Counter, data)))   #if same touchpoints are available on goals selected, the values of the touchpoints are added to each other and list will be formed 
