@@ -204,7 +204,7 @@ for x in Goals:
    df_degree_1 = df_degree_1.loc[:,~df_degree_1.columns.duplicated()]
    df_D = pd.concat([df_degree,df_degree_1])
    df['name'] = df['name'].replace(['First Year ','Second Year','Third Year','Final Year'],[1,2,3,4])
-   df['name'] = df['name'].astype(float).astype(int)
+   df['name'] = df['name'].astype(str).astype(int)
    Year = [Year]
    df_degree_2 = pd.DataFrame(Year, columns =['Year'])
    df_degree_2['year_score'] = pd.Series([0 for x in range(len(df_degree_2.index))])
