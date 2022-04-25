@@ -38,8 +38,9 @@ goal_dataframe_mapping = {
     'No goals selected' : goal_9} 
 
 goals = ['Start my Career with a Spring Week','Get a Summer Internship','Get an Internship alongside my Studies', 'Land a Placement Year','Win Awards & Competitions','Secure a Graduate Job','Find a Co-founder & Start a Business', 'Meet like-minded students','Expand my Network & Meet Industry Leader']
-
+goals = []
 Goals =  st.multiselect('Enter the goals',goals,key = "one")
+goals = goals.append(Goals)
 interest = st.multiselect('Enter the interest',df_tags['name'].unique(),key = "two")
 weight = [1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,1,2,3,3,2,1,3,3,2,1,1,2,3,3,2]
 Weight = st.multiselect('Enter the weight',weight,key = "three")
