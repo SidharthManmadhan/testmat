@@ -135,8 +135,8 @@ word_embeddings = model.encode(df_T['Interest'])
 A = np.arange(len(df_T['description']))
 for a in A:
       description_score  =  distance.cdist([sentence_embeddings[a]],word_embeddings[0:])
-       a += 1
-       for x in description_score:
+      a += 1
+      for x in description_score:
             df_T['description_score']=pd.Series(x)
      
  df_T['city score'] = np.nan
