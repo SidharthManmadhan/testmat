@@ -139,17 +139,17 @@ for a in A:
       for x in description_score:
             df_T['description_score']=pd.Series(x)
      
- df_T['city score'] = np.nan
- df_universities = pd.merge(df_universities, df_cities, left_on='city_id',right_on='id',suffixes=('', '_x'),how = 'inner')
- df_universities = df_universities.loc[:,~df_universities.columns.duplicated()]
- df_universities = df_universities.loc[df_universities['name'] == University]
- city_name = df_universities.iloc[0]['city_name']
- df_T['city score'] = np.where(df_T['city_name'] == city_name, 1,0)
+df_T['city score'] = np.nan
+df_universities = pd.merge(df_universities, df_cities, left_on='city_id',right_on='id',suffixes=('', '_x'),how = 'inner')
+df_universities = df_universities.loc[:,~df_universities.columns.duplicated()]
+df_universities = df_universities.loc[df_universities['name'] == University]
+city_name = df_universities.iloc[0]['city_name']
+df_T['city score'] = np.where(df_T['city_name'] == city_name, 1,0)
  #df_T = df_T[['id','touchpointable_id','kind', 'title','name','createable_for_name','city_name','Weight','description','description_score','city score']].copy()
- df_subjects =  df_subjects.loc[df_subjects['subject_name'] == Subject]
- subject_name = df_subjects.iloc[0]['subject_name']  
+df_subjects =  df_subjects.loc[df_subjects['subject_name'] == Subject]
+subject_name = df_subjects.iloc[0]['subject_name']  
  
- S = []
+S = []
 
      
 if ',' in subject_name:
