@@ -203,12 +203,14 @@ for x in Goals:
    df_degree_1 =  pd.merge(df, df_degree_1, left_on='name',right_on='degree',suffixes=('', '_x'),how = 'inner')
    df_degree_1 = df_degree_1.loc[:,~df_degree_1.columns.duplicated()]
    df_D = pd.concat([df_degree,df_degree_1])
+   Year = [Year]
    df_degree_2 = pd.DataFrame(Year, columns =['Year'])
    df_degree_2['year_score'] = pd.Series([0 for x in range(len(df_degree_2.index))])
    df_degree_2 =  pd.merge(df, df_degree_2, left_on='name',right_on='Year',suffixes=('', '_x'),how = 'inner')
    df_degree_2 = df_degree_2.loc[:,~df_degree_2.columns.duplicated()]
    df_D = pd.concat([df_degree,df_degree_1])
    df_D = pd.concat([df_D,df_degree_2])
+    
    df_SD = pd.merge(df_S, df_D, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'inner')
    df_SD = df_SD.loc[:,~df_SD.columns.duplicated()]
    df_companies = pd.read_sql('select * from companies', con=engine)
