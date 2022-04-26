@@ -221,12 +221,12 @@ for x in Goals:
    df = pd.merge(df,df_companies,left_on='name',right_on='name',suffixes=('', '_x'))
    df = df.loc[:,~df.columns.duplicated()]
    df = pd.merge(df_SD, df, left_on='touchpointable_id',right_on='touchpointable_id',suffixes=('', '_x'),how = 'outer')
-   df = df.groupby('id', as_index=False).first()
-   df = df[['id','touchpointable_id','kind', 'title','name','creatable_for_name','city_name','Weight','description','city score','subject_score','degree_score','company score']].copy()
-   col_list = ['Weight','city score','degree_score','subject_score','company score']
-   df['matching score'] = df[col_list].sum(axis=1)
-   df = df.sort_values(by='matching score',ascending=False)
-   st.write(df)
+df = df.groupby('id', as_index=False).first()
+df = df[['id','touchpointable_id','kind', 'title','name','creatable_for_name','city_name','Weight','description','city score','subject_score','degree_score','company score']].copy()
+col_list = ['Weight','city score','degree_score','subject_score','company score']
+df['matching score'] = df[col_list].sum(axis=1)
+df = df.sort_values(by='matching score',ascending=False)
+st.write(df)
      
      
 
